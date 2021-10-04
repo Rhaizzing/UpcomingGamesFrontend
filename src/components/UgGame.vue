@@ -3,7 +3,7 @@
 		<img class="cover" :src="game.coverUrl || 'http://www.projetonovomundo.org.br/wp-content/plugins/bb-plugin/img/no-image.png'" />
 		<div class="info">
 			<h5 class="gameName">{{game.name}}</h5>
-			<span class="releases" v-for="(release, key) in game.fullReleaseDate.worldwide" :key="key">
+			<span class="releases" v-for="(release, key) in game.releaseDate.worldwide" :key="key">
 				<b>{{key}}: </b>
 				<label>{{release?.substring(0, 10)}}</label>
 			</span>
