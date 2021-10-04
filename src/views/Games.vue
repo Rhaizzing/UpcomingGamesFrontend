@@ -1,6 +1,6 @@
 <template>
-	<div class="about">
-		<ug-game :v-if="erroed" v-for="game in games" :key="game.Id" :game="game"/>
+	<div class="games">
+		<ug-game :v-if="erroed" v-for="game in games" :key="game.id" :game="game"/>
 		<div class="footerBar">
 			<button @click="previousPage">Previous Page</button>
 			<h3>{{page}}</h3>
@@ -14,8 +14,10 @@ import { ref } from 'vue';
 import axios from 'axios';
 import UgGame from '@/components/UgGame.vue';
 
+import { UpcomingGame } from '@/interfaces/UpcomingGame';
+
 const erroed = ref(false);
-const games = ref([]);
+const games = ref<UpcomingGame[]>([]);
 const page = ref(1);
 const pageSize = 5;
 
@@ -41,7 +43,7 @@ getGames();
 </script>
 
 <style scoped lang="scss">
-.about {
+.games {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
