@@ -1,14 +1,17 @@
 <template>
 	<div class="games">
-		<div class="allGames">
-			<ug-game
-				class="singleGame"
-				:v-if="erroed"
-				v-for="game in games?.data"
-				:key="game.id"
-				:game="game"
-			/>
+		<div v-show="loading">
+			<h1>Loading...</h1>
 		</div>
+		<transition-group name="game-list">
+			<div class="allRows">
+				<div class="allGames" v-for="(row, index) in rows" :key="index">
+					<div class="singleGame" v-for="game in row" :key="game.id">
+						<ug-game :game="game" />
+					</div>
+				</div>
+			</div>
+		</transition-group>
 		<div class="footerBar">
 			<!---->
 			<button class="button" @click="previousPage">
@@ -42,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 import UgGame from '@/components/UgGame.vue';
 
@@ -50,16 +53,55 @@ import { PaginatedResource } from '@/interfaces/PaginatedResource';
 import { UpcomingGame } from '@/interfaces/UpcomingGame';
 
 const erroed = ref(false);
+const loading = ref(true);
 const games = ref<PaginatedResource<UpcomingGame>>();
 const page = ref(1);
-const pageSize = 5;
+
+const rowSize = ref(1);
+
+function getRowSize() {
+	const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+
+	rowSize.value = Math.round(vw / (20 * 16)) - 1;
+}
+
+window.addEventListener('resize', getRowSize);
+getRowSize();
+
+const rowNumber = 4;
+const pageSize = computed(() => {
+	const temp = Math.round(rowSize.value * rowNumber);
+	return temp;
+});
+
+const rows = computed(() => {
+	const values = [] as UpcomingGame[][];
+
+	if (games.value?.data) {
+		for (let i = 0, j = games.value?.data.length; i < j; i += rowSize.value) {
+			values.push(games.value?.data?.slice(i, i + rowSize.value));
+		}
+	}
+
+	return values;
+});
 
 function getGames() {
-	axios.get<PaginatedResource<UpcomingGame>>(`http://localhost:5000/api/v1/game?page=${page.value}&pageSize=${pageSize}`).then((response) => {
-		games.value = response.data;
-	}).catch((err) => { console.log(err); erroed.value = true; });
+	loading.value = true;
 
-	games.value = testGames;
+	axios
+		.get<PaginatedResource<UpcomingGame>>(
+			`http://localhost:5000/api/v1/game?page=${page.value}&pageSize=${pageSize.value}`,
+		)
+		.then((response) => {
+			games.value = response.data;
+		})
+		.catch((err) => {
+			console.log(err);
+			erroed.value = true;
+		});
+
+	loading.value = false;
 }
 
 function previousPage() {
@@ -70,7 +112,7 @@ function previousPage() {
 
 function nextPage() {
 	page.value += 1;
-	page.value = Math.min(page.value, (games.value?.totalPages || 1));
+	page.value = Math.min(page.value, games.value?.totalPages || 1);
 	getGames();
 }
 
@@ -78,7 +120,11 @@ getGames();
 </script>
 
 <style scoped lang="scss">
+.game-list-move {
+	transition: transform 0.8s ease;
+}
 .games {
+	overflow: hidden;
 	display: flex;
 	align-items: center;
 	flex-direction: column;
@@ -87,11 +133,12 @@ getGames();
 	.allGames {
 		display: flex;
 		align-items: center;
-		justify-content: space-evenly;
-	}
+		justify-content: space-around;
+		flex-wrap: wrap;
 
-	.singleGame {
-		padding: 2rem;
+		.singleGame {
+			margin: 0.7rem;
+		}
 	}
 
 	.footerBar {
