@@ -1,64 +1,140 @@
 <template>
-	<div class="game">
-		<img class="cover" :src="game.coverUrl || 'http://www.projetonovomundo.org.br/wp-content/plugins/bb-plugin/img/no-image.png'" />
-		<div class="info">
-			<h5 class="gameName">{{game.name}}</h5>
-			<span class="releases" v-for="(release, key) in game.releaseDate.worldwide" :key="key">
-				<b>{{key}}: </b>
-				<label>{{release?.substring(0, 10)}}</label>
-			</span>
+	<div class="component">
+		<div class="game" :style="bindStyle">
+			<img
+				class="cover"
+				:src="game.coverUrl || 'http://www.projetonovomundo.org.br/wp-content/plugins/bb-plugin/img/no-image.png'"
+			/>
+			<div class="info">
+				<span class="gameName">{{ game.name }}</span>
+				<span class="releases" v-for="(release, key) in game.releaseDate.worldwide" :key="key">
+					<span class="releaseKey">- {{ key }}:</span>
+					<span class="releaseDate">{{ release?.substring(0, 10) }}</span>
+				</span>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { UpcomingGame } from '@/interfaces/UpcomingGame';
 
 interface Props {
 	game: UpcomingGame;
+	backgroudColor: string;
 }
 const props = defineProps<Props>();
+
+const bindStyle = computed(() => ({
+	'--coverUrl': `url(${props.game.coverUrl})`,
+	'--backgroundColor': '#FFF',
+	'--color': '#FFF',
+}));
+
 </script>
 
 <style scoped lang="scss">
-.game {
-	margin: 0.2rem;
-	width: 70vw;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap");
+
+.component:hover {
+	min-width: 40rem;
+	max-width: 40rem;
+
+	min-height: 19.5rem;
 	max-height: 24rem;
-	display: flex;
-	align-content: center;
-	justify-content: space-between;
 
-	border: 0.1rem solid grey;
-	border-radius: 0.7rem;
+	transition: ease-in 0.3s;
 
-	background-color: grey;
+	.game {
+		clip-path: inset(0 round 0.7rem);
+		transition: clip-path 500ms;
 
-	.cover {
-		border: 0.1rem solid white;
-		border-radius: 5%;
-		max-width: 13.5rem;
-		max-height: 18.5rem;
-		margin: 0.5rem;
+		.info {
+			opacity: 1;
+			visibility: visible;
+			cursor: pointer;
+			transition: opacity 500ms ease-in 150ms;
+
+			margin: 0.5rem;
+			max-height: 18.5rem;
+			background-color: rgba(255, 255, 255, 0.1);
+			border-radius: 0.7rem;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+
+			.gameName {
+				font-size: 3em;
+				padding: 0rem;
+				font-weight: 700;
+			}
+
+			.releases {
+				margin: 1rem;
+				display: flex;
+				justify-content: space-between;
+				font-size: 1.2rem;
+			}
+		}
+	}
+}
+.component {
+	font-family: "Montserrat", sans-serif;
+
+	min-width: 15rem;
+	max-width: 15rem;
+
+	min-height: 19.5rem;
+	max-height: 24rem;
+
+	transition: ease-out 0.3s;
+
+	.game:before {
+		content: "";
+		position: absolute;
+
+		min-width: inherit;
+		max-width: inherit;
+
+		min-height: inherit;
+		max-height: inherit;
+		z-index: -1;
+
+		filter: blur(15px);
+
+		background-image: var(--coverUrl);
+		background-repeat: no-repeat;
+		background-size: cover;
 	}
 
-	.info {
-		margin: 0.2rem 0.3rem 0.3rem 0;
-		max-height: 18.5rem;
-		border: 0.1rem solid grey;
-		background-color: lightgray;
-		border-radius: 0.7rem;
-		flex-grow: 1;
-		display: flex;
-		flex-direction: column;
-		font-size: 2em;
+	.game {
+		clip-path: inset(-2rem);
 
-		.gameName {
-			padding: 0 0.1rem 0 0.1rem;
+		min-width: inherit;
+		max-width: inherit;
+
+		min-height: inherit;
+		max-height: inherit;
+
+		display: flex;
+		align-content: center;
+		justify-content: space-between;
+
+		color: var(--color);
+
+		.info {
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0ms linear, visibility 0s linear 0ms;
 		}
 
-		.releases {
-			font-size: 1.2rem;
+		.cover {
+			border: 0.3rem solid var(--backgroundColor);
+			border-radius: 0.7rem;
+			max-width: 13.5rem;
+			max-height: 18.5rem;
+			margin: 0.5rem;
 		}
 	}
 }
