@@ -31,7 +31,7 @@ import axios from 'axios';
 import { PaginatedResource } from '@/interfaces/PaginatedResource';
 import { UpcomingGame } from '@/interfaces/UpcomingGame';
 import UgRow from '@/components/UgRow.vue';
-import UgPaginate from '@/components/Ug-Paginate.vue';
+import UgPaginate from '@/components/UgPaginate.vue';
 
 const erroed = ref(false);
 const loading = ref(true);
