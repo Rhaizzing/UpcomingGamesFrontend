@@ -1,45 +1,25 @@
 <template>
 	<div class="games">
-		<div v-show="loading">
+		<div v-if="loading">
 			<h1>Loading...</h1>
 		</div>
-		<transition-group name="game-list">
-			<div class="allRows">
-				<div class="allGames" v-for="(row, index) in rows" :key="index">
-					<div class="singleGame" v-for="game in row" :key="game.id">
-						<ug-game :game="game" />
-					</div>
+		<div v-if="erroed">
+			<h1>There was an error loading the games...</h1>
+		</div>
+		<div class="games" v-if="!erroed && !loading">
+			<div class="all-rows">
+				<div v-for="(row, index) in rows" :key="index">
+					<ug-row :games="row" />
 				</div>
 			</div>
-		</transition-group>
-		<div class="footerBar">
-			<!---->
-			<button class="button" @click="previousPage">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="50px">
-					<title>Caret Back Circle</title>
-					<path
-						fill="currentColor"
-						d="M273.77 169.57l-89.09 74.13a16 16 0 000
-						24.6l89.09 74.13A16 16 0 00300 330.14V181.86a16 16
-						0 00-26.23-12.29z"
-					/>
-				</svg>
-			</button>
-			<!---->
-			<h3>{{ page }}/{{ games?.totalPages }}</h3>
-			<!---->
-			<button class="button" @click="nextPage">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="50px">
-					<title>Caret Forward Circle</title>
-					<path
-						fill="currentColor"
-						d="M238.23 342.43l89.09-74.13a16
-						16 0 000-24.6l-89.09-74.13A16 16 0
-						00212 181.86v148.28a16 16 0 0026.23 12.29z"
-					/>
-				</svg>
-			</button>
-			<!---->
+			<div>
+				<ug-paginate
+					:page="page"
+					:totalPages="totalPages"
+					@previous="previousPage"
+					@next="nextPage"
+				/>
+			</div>
 		</div>
 	</div>
 </template>
@@ -47,15 +27,17 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import axios from 'axios';
-import UgGame from '@/components/UgGame.vue';
 
 import { PaginatedResource } from '@/interfaces/PaginatedResource';
 import { UpcomingGame } from '@/interfaces/UpcomingGame';
+import UgRow from '@/components/UgRow.vue';
+import UgPaginate from '@/components/Ug-Paginate.vue';
 
 const erroed = ref(false);
 const loading = ref(true);
-const games = ref<PaginatedResource<UpcomingGame>>();
+const games = ref<UpcomingGame[]>();
 const page = ref(1);
+const totalPages = ref(1);
 
 const rowSize = ref(1);
 
@@ -77,9 +59,9 @@ const pageSize = computed(() => {
 const rows = computed(() => {
 	const values = [] as UpcomingGame[][];
 
-	if (games.value?.data) {
-		for (let i = 0, j = games.value?.data.length; i < j; i += rowSize.value) {
-			values.push(games.value?.data?.slice(i, i + rowSize.value));
+	if (games.value) {
+		for (let i = 0, j = games.value?.length; i < j; i += rowSize.value) {
+			values.push(games.value?.slice(i, i + rowSize.value));
 		}
 	}
 
@@ -94,7 +76,8 @@ function getGames() {
 			`http://localhost:5000/api/v1/game?page=${page.value}&pageSize=${pageSize.value}`,
 		)
 		.then((response) => {
-			games.value = response.data;
+			games.value = response.data.data;
+			totalPages.value = response.data.totalPages;
 		})
 		.catch((err) => {
 			console.log(err);
@@ -112,8 +95,9 @@ function previousPage() {
 
 function nextPage() {
 	page.value += 1;
-	page.value = Math.min(page.value, games.value?.totalPages || 1);
+	page.value = Math.min(page.value, totalPages.value);
 	getGames();
+	console.log('next');
 }
 
 getGames();
@@ -124,41 +108,16 @@ getGames();
 	transition: transform 0.8s ease;
 }
 .games {
-	overflow: hidden;
 	display: flex;
 	align-items: center;
 	flex-direction: column;
 	justify-content: space-between;
 
-	.allGames {
+	.all-rows {
 		display: flex;
 		align-items: center;
 		justify-content: space-around;
 		flex-wrap: wrap;
-
-		.singleGame {
-			margin: 0.7rem;
-		}
-	}
-
-	.footerBar {
-		width: 70vw;
-		display: flex;
-		justify-content: center;
-
-		.button {
-			border-radius: 1rem;
-			border: 0;
-			margin: 0 3rem 0 3rem;
-		}
-		.button:active {
-			background-color: rgb(75, 75, 75);
-			border: 0;
-
-			svg {
-				color: white;
-			}
-		}
 	}
 }
 </style>
