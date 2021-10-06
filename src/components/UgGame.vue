@@ -28,7 +28,7 @@ const props = defineProps<Props>();
 
 const bindStyle = computed(() => ({
 	'--coverUrl': `url(${props.game.coverUrl || 'http://www.projetonovomundo.org.br/wp-content/plugins/bb-plugin/img/no-image.png'})`,
-	'--backgroundColorAlpha': '#FFFFFF33',
+	'--backgroundColorAlpha': 'rgba(255, 255, 255, 0.2)',
 	'--backgroundColor': '#FFF',
 	'--highlightColor': '#FFF',
 }));
@@ -36,7 +36,6 @@ const bindStyle = computed(() => ({
 </script>
 
 <style scoped lang="scss">
-@use "sass:color";
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap");
 
 .component:hover {
