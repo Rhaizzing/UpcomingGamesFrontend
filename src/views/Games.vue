@@ -50,11 +50,7 @@ function getRowSize() {
 window.addEventListener('resize', getRowSize);
 getRowSize();
 
-const rowNumber = 4;
-const pageSize = computed(() => {
-	const temp = Math.round(rowSize.value * rowNumber);
-	return temp;
-});
+const pageSize = 20;
 
 const rows = computed(() => {
 	const values = [] as UpcomingGame[][];
