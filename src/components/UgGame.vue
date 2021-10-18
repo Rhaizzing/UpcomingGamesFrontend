@@ -18,18 +18,19 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import axios from 'axios';
 import { UpcomingGame } from '@/interfaces/UpcomingGame';
 
 interface Props {
 	game: UpcomingGame;
-	backgroudColor: string;
 }
 const props = defineProps<Props>();
 
 const bindStyle = computed(() => ({
-	'--coverUrl': `url(${props.game.coverUrl})`,
+	'--coverUrl': `url(${props.game.coverUrl || 'http://www.projetonovomundo.org.br/wp-content/plugins/bb-plugin/img/no-image.png'})`,
+	'--backgroundColorAlpha': 'rgba(255, 255, 255, 0.2)',
 	'--backgroundColor': '#FFF',
-	'--color': '#FFF',
+	'--highlightColor': '#FFF',
 }));
 
 </script>
@@ -46,6 +47,8 @@ const bindStyle = computed(() => ({
 
 	transition: ease-in 0.3s;
 
+	cursor: pointer;
+
 	.game {
 		clip-path: inset(0 round 0.7rem);
 		transition: clip-path 500ms;
@@ -53,12 +56,10 @@ const bindStyle = computed(() => ({
 		.info {
 			opacity: 1;
 			visibility: visible;
-			cursor: pointer;
 			transition: opacity 500ms ease-in 150ms;
 
 			margin: 0.5rem;
 			max-height: 18.5rem;
-			background-color: rgba(255, 255, 255, 0.1);
 			border-radius: 0.7rem;
 			flex-grow: 1;
 			display: flex;
@@ -80,15 +81,15 @@ const bindStyle = computed(() => ({
 	}
 }
 .component {
-	font-family: "Montserrat", sans-serif;
-
 	min-width: 15rem;
 	max-width: 15rem;
+
+	font-family: "Montserrat", sans-serif;
 
 	min-height: 19.5rem;
 	max-height: 24rem;
 
-	transition: ease-out 0.3s;
+	transition: all ease-out 0.3s;
 
 	.game:before {
 		content: "";
@@ -106,6 +107,7 @@ const bindStyle = computed(() => ({
 		background-image: var(--coverUrl);
 		background-repeat: no-repeat;
 		background-size: cover;
+		background-position: center;
 	}
 
 	.game {
@@ -121,9 +123,12 @@ const bindStyle = computed(() => ({
 		align-content: center;
 		justify-content: space-between;
 
-		color: var(--color);
+		color: var(--highlightColor);
 
 		.info {
+			text-shadow: 1px 1px rgba(0,0,0,0.5), -1px 1px rgba(0,0,0,0.5),
+			1px -1px rgba(0,0,0,0.5), -1px -1px rgba(0,0,0,0.5);
+			background-color: var(--backgroundColorAlpha);
 			opacity: 0;
 			visibility: hidden;
 			transition: opacity 0ms linear, visibility 0s linear 0ms;
