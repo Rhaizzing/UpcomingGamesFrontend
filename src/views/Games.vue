@@ -84,16 +84,24 @@ function getGames() {
 }
 
 function previousPage() {
-	page.value -= 1;
-	page.value = Math.max(page.value, 1);
-	getGames();
+  page.value -= 1;
+
+  if (page.value <= 0) {
+    page.value = totalPages.value;
+  }
+
+  getGames();
 }
 
 function nextPage() {
-	page.value += 1;
-	page.value = Math.min(page.value, totalPages.value);
-	getGames();
-	console.log('next');
+  page.value += 1;
+
+  if (page.value > totalPages.value) {
+    page.value = 1;
+  }
+
+  getGames();
+  console.log('next');
 }
 
 getGames();
