@@ -15,8 +15,8 @@ module.exports = {
     'vue/script-setup-uses-vars': 'error',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    "indent": ["error", "tab"],
-    'no-tabs' : 'off'
+    'no-spaced-func' : 'off',
+    'func-call-spacing' : 'off'
   },
   globals: {
     defineProps: "readonly",

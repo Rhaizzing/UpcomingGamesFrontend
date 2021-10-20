@@ -1,9 +1,10 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/games">Games</router-link>
+    <router-link to="/">Home</router-link>|
+    <router-link to="/games">Games</router-link>|
+    <router-link to="/search">Search Game</router-link>
   </div>
-  <router-view/>
+  <router-view />
 </template>
 
 <style lang="scss">
