@@ -69,7 +69,7 @@ function getGames() {
 
 	axios
 		.get<PaginatedResource<UpcomingGame>>(
-			`http://localhost:5000/api/v1/game?page=${page.value}&pageSize=${pageSize.value}`,
+			`http://localhost:5000/api/v1/game?page=${page.value}&pageSize=${pageSize}`,
 		)
 		.then((response) => {
 			games.value = response.data.data;
