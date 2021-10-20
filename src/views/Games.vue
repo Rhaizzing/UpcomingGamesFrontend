@@ -1,13 +1,13 @@
 <template>
   <div class="games">
+    <div>
+      <ug-search-bar @input="filterPage" />
+    </div>
     <div v-if="loading">
       <h1>Loading...</h1>
     </div>
     <div v-if="erroed">
       <h1>There was an error loading the games...</h1>
-    </div>
-    <div>
-      <ug-search-bar @input="filterPage" />
     </div>
     <div class="games" v-if="!erroed && !loading">
       <div class="all-rows">
