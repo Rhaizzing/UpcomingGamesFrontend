@@ -126,12 +126,24 @@ const bindStyle = computed(() => ({
 		color: var(--highlightColor);
 
 		.info {
-			text-shadow: 1px 1px rgba(0,0,0,0.5), -1px 1px rgba(0,0,0,0.5),
-			1px -1px rgba(0,0,0,0.5), -1px -1px rgba(0,0,0,0.5);
+			text-shadow: 1px 1px rgba(0, 0, 0, 0.5), -1px 1px rgba(0, 0, 0, 0.5),
+				1px -1px rgba(0, 0, 0, 0.5), -1px -1px rgba(0, 0, 0, 0.5);
 			background-color: var(--backgroundColorAlpha);
 			opacity: 0;
 			visibility: hidden;
 			transition: opacity 0ms linear, visibility 0s linear 0ms;
+
+			overflow-y: scroll;
+		}
+
+		.info::-webkit-scrollbar {
+			width: 0.5rem;
+		}
+
+		.info::-webkit-scrollbar-thumb {
+			box-shadow: inset 0 0 5px grey;
+			border-radius: 1rem;
+			background: white;
 		}
 
 		.cover {
