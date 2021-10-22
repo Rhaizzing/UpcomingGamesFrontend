@@ -78,16 +78,16 @@ const bindStyle = computed(() => ({
         justify-content: space-between;
         font-size: 1.2rem;
       }
-    }
 
-    .info::-webkit-scrollbar {
+    &::-webkit-scrollbar {
       width: 0.5rem;
     }
 
-    .info::-webkit-scrollbar-thumb {
+    &::-webkit-scrollbar-thumb {
       box-shadow: inset 0 0 5px white;
       border-radius: 1rem;
       background: transparent;
+    }
     }
   }
 }
